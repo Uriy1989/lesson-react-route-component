@@ -1,0 +1,14 @@
+.block {
+	height: 100px;
+	width: 100;
+}
+
+.app {
+	min-width: 800px;
+	background-color: azure;
+	text-align: left;
+}
+/* после active добавляется текст автоматом чтобы не добавлялся пишем :global*/
+:global .active {
+	text-decoration: none;
+}
