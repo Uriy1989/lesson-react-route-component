@@ -7,6 +7,8 @@ import {
 	useParams,
 	useMatch,
 	useNavigate,
+	Navigate,
+	useRoutes,
 } from 'react-router-dom'; //Link
 //NavLink - можно указывать ссылку как неактивную
 //<a class="active" href="/catalog/product/2" data-discover="true" aria-current="page">ПК</a>
@@ -54,7 +56,7 @@ const Catalog = () => (
 //id можно получить из параметров страницы, то есть адреса :(id)
 //params.id
 
-const LOADING_TIMEOUT = 5000;
+const LOADING_TIMEOUT = 3000;
 
 const ProductNotFound = () => <div>товар не существует</div>;
 
@@ -79,7 +81,7 @@ const Product = () => {
 			isLoadingTimeout = true;
 
 			if (!isProductLoaded) {
-				navigate('/product-loaded-error');
+				navigate('/product-loaded-error', { replace: true }); //{replace: true} не создаётся шаг в истории браузера
 			}
 
 			//если ошибка переход на другую страницу без клика по ссылки
@@ -89,13 +91,17 @@ const Product = () => {
 			isProductLoaded = true;
 
 			if (!isLoadingTimeout) {
+				if (!loadedProduct) {
+					navigate('/product-not-exist');
+					return;
+				}
 				setProduct(loadedProduct);
 			}
 		});
 	}, [navigate, params.id]); //product нед обновляем ссылка всегда одна и та же
 
 	if (!product) {
-		return <ProductNotFound />;
+		return null;
 	}
 
 	const { name, price, amount } = product;
@@ -154,15 +160,22 @@ export const ReactRouteComponent = () => {
 					<Route path="service/:id" element={<Product />} />
 				</Route>
 				<Route path="/contacts" element={<Contacts />} />
-				<Route path="*" element={<NotFound />} />
+				<Route path="/404" element={<NotFound />} />
+				{/* <Route path="*" element={<Navigate to="/404" replace={true}/>} /> */}
+				<Route path="*" element={<Navigate to="/404" />} />
 				<Route
 					path="/product-loaded-error"
 					element={<ProductLoadError />}
+				/>
+				<Route
+					path="/product-not-exist"
+					element={<ProductNotFound />}
 				/>
 			</Routes>
 		</div>
 	);
 };
+//у react route есть дополнительная возможность описывать маршруты не используя jsx
 
 /*			<div>
 				<h3>Меню</h3>
