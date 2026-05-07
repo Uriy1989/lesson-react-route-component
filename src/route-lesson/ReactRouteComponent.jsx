@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import {
 	Routes,
 	Route,
@@ -136,8 +136,25 @@ const ExtendedLink = ({ to, children }) => (
 
 //  href === to, to используется в NavLink чтобы страница не перезагружалась переходе
 export const ReactRouteComponent = () => {
+	const routes = useRoutes([
+		{ path: '/', element: <MainPage /> },
+		{
+			path: '/catalog',
+			element: <Catalog />,
+			children: [
+				{ path: 'product/:id', element: <Product /> },
+				{ path: 'product/:id', element: <Product /> },
+			],
+		},
+		{ path: '/contacts', element: <Contacts /> },
+		{ path: '/product-load-error', element: <ProductLoadError /> },
+		{ path: '/404', element: <NotFound /> },
+		{ path: '*', element: <Navigate to="/404" /> },
+	]);
+	const pageNumber = 'one';
 	return (
 		<div className={styles.app}>
+			<title>{`page ${pageNumber}`}</title>
 			<div>2. Routes, Route, NavLink</div>
 			<div>
 				<h3>Меню</h3>
@@ -153,25 +170,8 @@ export const ReactRouteComponent = () => {
 					</li>
 				</ul>
 			</div>
-			<Routes>
-				<Route path="/" element={<MainPage />} />
-				<Route path="/catalog" element={<Catalog />}>
-					<Route path="product/:id" element={<Product />} />
-					<Route path="service/:id" element={<Product />} />
-				</Route>
-				<Route path="/contacts" element={<Contacts />} />
-				<Route path="/404" element={<NotFound />} />
-				{/* <Route path="*" element={<Navigate to="/404" replace={true}/>} /> */}
-				<Route path="*" element={<Navigate to="/404" />} />
-				<Route
-					path="/product-loaded-error"
-					element={<ProductLoadError />}
-				/>
-				<Route
-					path="/product-not-exist"
-					element={<ProductNotFound />}
-				/>
-			</Routes>
+
+			{routes}
 		</div>
 	);
 };
@@ -190,3 +190,23 @@ export const ReactRouteComponent = () => {
 					</li>
 				</ul>
 			</div> */
+
+// <Routes>
+// 	<Route path="/" element={<MainPage />} />
+// 	<Route path="/catalog" element={<Catalog />}>
+// 		<Route path="product/:id" element={<Product />} />
+// 		<Route path="service/:id" element={<Product />} />
+// 	</Route>
+// 	<Route path="/contacts" element={<Contacts />} />
+// 	<Route path="/404" element={<NotFound />} />
+// 	{/* <Route path="*" element={<Navigate to="/404" replace={true}/>} /> */}
+// 	<Route path="*" element={<Navigate to="/404" />} />
+// 	<Route
+// 		path="/product-loaded-error"
+// 		element={<ProductLoadError />}
+// 	/>
+// 	<Route
+// 		path="/product-not-exist"
+// 		element={<ProductNotFound />}
+// 	/>
+// </Routes>
